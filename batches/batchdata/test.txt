@@ -1,0 +1,4 @@
+tg ,
+tg ,f
+player.additem 000139C0 1 ,d
+player.additem Item Code 1 ,122

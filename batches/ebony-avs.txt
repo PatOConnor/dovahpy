@@ -1,0 +1,14 @@
+player.setAV 0001AFB3 100
+player.setAV 0001AFE9 100
+player.setAV 0001B025 100
+player.setAV 0001AFB1 100
+player.setAV 0001AFDF 100
+player.setAV 000236A5 600
+player.setAV 000C8911 50000
+player.setAV 0001CB64 50000
+player.setAV 0001B017 100
+player.setAV 0001B00C 100
+player.setAV 0001AFEA 100
+player.setAV 0001ACE5 70
+player.setAV 0001ACE3 70
+player.setAV 0001ACE4 60

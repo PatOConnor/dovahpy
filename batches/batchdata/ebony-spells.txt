@@ -1,0 +1,86 @@
+player.additem 00013961 1
+ebony armor <- unenchanted set 
+player.additem 00013963 1
+ebony helmet
+player.additem 00013960 1
+ebony boots
+player.additem 00013962 1
+ebony gauntlets
+player.additem 000139AB 1
+ebony war axe
+player.additem 000139AF 1
+ebony greatsword
+player.additem 000139AD 1
+ebony bow
+player.additem 0000000F 1000000
+million gold
+player.additem 0001AFB3 1
+dummy
+player.additem 000A271D 1
+fast healing <- restoration tomes
+player.additem 00013964 1
+ebony shield
+player.additem 000A271E 1
+healing hands
+player.additem 0010F64D 1
+close wounds
+player.additem 000DD643 1
+grand healing
+player.additem 0009E2AE 1
+lesser ward
+player.additem 000A2720 1
+steadfast ward
+player.additem 000A2721 turn undead
+turn undead
+player.additem 000A2727 1
+heal other
+player.additem 000FDE7B 1
+guardian circle
+player.additem 000A26FD 1
+firebolt
+player.additem 000A2706 1
+fireball
+player.additem 000A26FE 1
+ice spike <- destruction tomes
+player.additem 000A2707 1
+ice storm
+player.additem 000A26FF 1
+lightning bolt
+player.additem 000A2708 1
+chain lightning
+player.additem 0009CD52 1
+frostbite
+psb
+
+player.additem 0009CD53 1
+sparks
+player.additem 000A2700 1
+fire rune
+player.additem 000A2701 1
+frost rune
+player.additem 000A2702 1
+lightning rune
+player.additem 000A2703 1
+flame cloak
+player.additem 000A2704 1
+frost cloak
+player.additem 000A2705 1
+lightning cloak
+player.additem 0010F7F3 1
+icy spear
+player.additem 0009E2AB 1
+Conjure Familiar <- Conjuration Tomes
+player.additem 000A26EC 1
+conjure flame atronach
+player.additem 000A26EF 1
+conjure frost atronach
+player.additem 000A26F0 1
+conjure storm atronach
+player.additem 000B45F7 1
+conjure flaming jim
+player.additem Item Code 0
+foo
+player.additem 0009CD54 1
+soul trap
+player.additem 000A26EB 1
+reanimate corpse
