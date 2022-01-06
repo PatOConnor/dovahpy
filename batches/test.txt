@@ -1,4 +1,0 @@
-tg
-tg
-player.additem 000139C0 1
-player.additem Item Code 1

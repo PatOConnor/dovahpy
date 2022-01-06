@@ -3,7 +3,7 @@ from urllib.request import urlopen
 
 ################################
 # program uses beautiful soup to access website, get tables, format them into
-# usable data and save to file
+# usable data and save to file. Redundant now but included inpackage for posterity
 ################################
 
 def scrape_page(url_string):
@@ -70,6 +70,19 @@ def scrape_all(category, bound=None):
     write_to_file(category, master_list)
     print('file written')
 
+
+def get_all_tables():
+    print('items')
+    scrape_all('items', 88)
+    print('npcs')
+    scrape_all('npcs', 28)
+    print('enchantments')
+    scrape_all('enchantments', 10)
+    for c in ['perks', 'quests', 'spells', 'avs', 'weather']:
+        print(c)
+        scrape_all(c)
+
+
 if __name__=="__main__":
     print('######################################\n',
         '#\t\tSkyrim Data Scraper\n',
@@ -96,16 +109,9 @@ if __name__=="__main__":
             scrape_all('npcs', 28)
             print('enchantments')
             scrape_all('enchantments', 10)
-            print('perks')
-            scrape_all('perks')
-            print('quests')
-            scrape_all('quests')
-            print('spells')
-            scrape_all('spells')
-            print('avs')
-            scrape_all('avs')
-            print('weather')
-            scrape_all('weather')
+            for c in ['perks', 'quests', 'spells', 'avs', 'weather']:
+                print(c)
+                scrape_all(c)
             running = False
         elif category == 'quit':
             running = False
