@@ -10,30 +10,46 @@ from dovah.skyrimdata.skyrimweather import skyrim_weather
 from dovah.skyrimdata.skyrimskills import skyrim_skills
 #from dovah.skyrimdata.alchemy import ingredients
 import os
+from rich import print
 
 MS_SKYPATH = 'C:\Program Files (x86)\Steam\steamapps\common\Skyrim Special Edition'
 
 def run(args=None):
     command_maker = CommandMaker()
-    if args:
+    if not args:
+        command_maker.run_text_ui()
+    else:
         if args[0] =='load':
             if len(args) == 1:
                 filename = input('Enter file to load: ')
             else: #the second one is the filename
                 filename = args[1]
             command_maker.load_cmds(filename)
-    command_maker.run_text_ui()
+            command_maker.run_text_ui()
+        else:
+            #new keyword is used alongside arguments; py dovah cmd new
+            if args[0] == 'new' and len(args) > 1:
+                command_maker.run_text_ui(args[1::])
+            #py dovah cmd additem player 30
+            elif args[0] != 'new':
+                command_maker.run_text_ui(args)
+            #py dovah new
+            else:
+                command_maker.run_text_ui()
 
 
 class CommandMaker:
-    def __init__(self, skypath=MS_SKYPATH):
+    def __init__(self):
         self.cmd_list = {}
-        self.skypath = skypath
 
-    def run_text_ui(self):
+    def run_text_ui(self, args=None):
         while(True):
             self.show_cmds()
-            choice = ['foo']
+            if not args:
+                choice = ['foo']
+            else:
+                choice = args
+                print(choice)
             while choice[0] not in ['add','save','load','locate', 'exit']:
                 choice = self.ask_user()
             if choice[0] == 'add':
@@ -55,6 +71,11 @@ class CommandMaker:
                 self.locate_skyrim()
             if choice[0] == 'exit':
                 break
+
+            #after first loop, delete arguments and input from user
+            choice.clear()
+            if args:
+                args.clear()
 
     def ask_user(self):
         return input('Enter Your Command from save, load, add or locate followed by additional parameters: ').split()
@@ -81,7 +102,7 @@ class CommandMaker:
     #console command editorz
     '''Prints console commands stored in self.cmd_list'''
     def show_cmds(self):
-        if len(self.cmd_list) <= 1:
+        if len(self.cmd_list) < 1:
             print('No Commands Stored')
         else:
             for i in range(1,len(self.cmd_list)):
@@ -96,11 +117,13 @@ class CommandMaker:
         #continues as if there were no arguments
         if arg:
             basearg = arg.pop(0)
+            print('add debug: here i am: ', basearg)
             #check if the argument is the key corresponding to a command
             try:
                 basearg = int(basearg)
             except ValueError: #check if its a number
                 pass
+
             if basearg in skyrim_commands:#e.g. 'add 10'
                 key = basearg
                 cmdbase = skyrim_commands[basearg][0]
@@ -114,6 +137,7 @@ class CommandMaker:
                 key = self._ask_for_cmd_key()
                 cmdbase = skyrim_commands[key][0]
         else:
+            input()
             key = self._ask_for_cmd_key()
             cmdbase = skyrim_commands[key][0]
 
@@ -136,42 +160,17 @@ class CommandMaker:
         if len(other_params) > len(param_answers):
             param_answers.extend(self._ask_for_param(other_params[len(param_answers)::]))
 
-        name = input('Enter Desired Name or Press Enter: ')
+        name = input('Enter a nickname for this command: ')
         if not name:
             name=' '
 
         cmd = {}
         cmd['NAME'] = name
         cmd['CODE'] = self._form_cmd(cmdbase, target, param_answers)
-        self.cmd_list[len(self.cmd_list)] = cmd.copy() #gonna be set to the next value
+        self.cmd_list[len(self.cmd_list)] = cmd.copy()
+        #gonna be set to the next value
         print(cmd['NAME'], cmd['CODE'])
 
-    '''
-    def add_cmd(self, key=None, exact=None, name=' ', target=None, params=[]):
-        if exact != None:
-            cmd = {}
-            cmd['NAME'] = name
-            cmd['CODE'] = exact
-            self.cmd_list[len(self.cmd_list)] = cmd.copy()
-            return
-        if key:
-            cmdbase = skyrim_commands[key][0]
-        else:
-            key = self._ask_for_cmd_key()
-            cmdbase = skyrim_commands[key][0]
-        if key >= 10 and target == None:
-            target = self._ask_for_target()
-        if len(skyrim_commands[key]) > 1:
-            p = skyrim_commands[key][1::]
-            params = self._ask_for_param(p)
-        if name == ' ':
-            name = input('Enter Desired Name or Press Enter: ')
-        #adding to master dict
-        cmd = {}
-        cmd['NAME'] = name
-        cmd['CODE'] = self._form_cmd(cmdbase, target, params)
-        self.cmd_list[len(self.cmd_list)] = cmd.copy() #gonna be set to the next value
-    '''
     '''Saves command as a list to folder designated as skyrim directory'''
     def save_cmds(self, filename, skypath=None):
         if skypath==None: skypath=self.skypath
@@ -224,7 +223,7 @@ class CommandMaker:
         if input('is the player the target? ').lower() == 'y':
             return 'player'
         else:
-            return self.browse_ids(catalog=skyrim_npcs, title='npc')
+            return self._browse_ids(catalog=skyrim_npcs, title='npc')
 
     def _ask_for_param(self, paramIDs):
         params = []
