@@ -8,16 +8,57 @@ from dovah.skyrimdata.skyrimquests import skyrim_quests
 from dovah.skyrimdata.skyrimspells import skyrim_spells
 from dovah.skyrimdata.skyrimweather import skyrim_weather
 from dovah.skyrimdata.skyrimskills import skyrim_skills
-from dovah.skyrimdata.alchemy import ingredients
+#from dovah.skyrimdata.alchemy import ingredients
 import os
 
 MS_SKYPATH = 'C:\Program Files (x86)\Steam\steamapps\common\Skyrim Special Edition'
 
-class CommandMaker:
+def run(args=None):
+    command_maker = CommandMaker()
+    if args:
+        if args[0] =='load':
+            if len(args) == 1:
+                filename = input('Enter file to load: ')
+            else: #the second one is the filename
+                filename = args[1]
+            command_maker.load_cmds(filename)
+    command_maker.run_text_ui()
 
+
+class CommandMaker:
     def __init__(self, skypath=MS_SKYPATH):
-        self.cmd_list = {0:{'NAME':'Dummy', 'CODE':'Dummy'}}
+        self.cmd_list = {}
         self.skypath = skypath
+
+    def run_text_ui(self):
+        while(True):
+            self.show_cmds()
+            choice = ['foo']
+            while choice[0] not in ['add','save','load','locate', 'exit']:
+                choice = self.ask_user()
+            if choice[0] == 'add':
+                if len(choice) > 1:
+                    self.add_cmd(arg=choice[1::]) #further parsing happens by method
+                else:
+                    self.add_cmd()
+            if choice[0] == 'save':
+                if len(choice) > 1:
+                    self.save_cmds(choice[1])#filename
+                else:
+                    self.save_cmds()
+            if choice[0] == 'load':
+                if len(choice) > 1:
+                    self.load_cmds(choice[1])#filename
+                else:
+                    self.load_cmds()
+            if choice[0] == 'locate':
+                self.locate_skyrim()
+            if choice[0] == 'exit':
+                break
+
+    def ask_user(self):
+        return input('Enter Your Command from save, load, add or locate followed by additional parameters: ').split()
+
 
     def help(self):
         print('show_cmds() : prints commands')
@@ -26,7 +67,8 @@ class CommandMaker:
         print('locate_skyrim() : searches computer for skyrimse.exe')
 
     def pop(self, index):
-        if index == 0: raise IndexError
+        if index == 0:
+            raise IndexError
         self.cmd_list.pop(index)
 
     '''searches through folders to find skyrim and sets it to self.skypath'''
@@ -36,16 +78,75 @@ class CommandMaker:
                 self.skypath = root
                 return
 
-    #console command editor
+    #console command editorz
     '''Prints console commands stored in self.cmd_list'''
     def show_cmds(self):
-        if len(self.cmd_list) == 1:
+        if len(self.cmd_list) <= 1:
             print('No Commands Stored')
         else:
             for i in range(1,len(self.cmd_list)):
                 print(i, self.cmd_list[i]['NAME'], '\n\t', self.cmd_list[i]['CODE'])
 
     '''Enter Console Command Wizard'''
+
+    def add_cmd(self, arg=None):
+        #first argument should be either key to command or name of command
+        #if it is, then the command wizard proceeds and stops when input runs out
+        #if it is not, them the command wizard regards input as garbage and
+        #continues as if there were no arguments
+        if arg:
+            basearg = arg.pop(0)
+            #check if the argument is the key corresponding to a command
+            try:
+                basearg = int(basearg)
+            except ValueError: #check if its a number
+                pass
+            if basearg in skyrim_commands:#e.g. 'add 10'
+                key = basearg
+                cmdbase = skyrim_commands[basearg][0]
+            else:
+                for c in skyrim_commands:#check if argument is the name of a command
+                    if basearg == skyrim_commands[c][0]:
+                        key = c
+                        cmdbase = basearg#e.g. 'add additem', 'add setscale'
+                        break
+                #bad input means loop finishes
+                key = self._ask_for_cmd_key()
+                cmdbase = skyrim_commands[key][0]
+        else:
+            key = self._ask_for_cmd_key()
+            cmdbase = skyrim_commands[key][0]
+
+        #next argument is the desired target if applicable
+        if key >= 10:
+            if arg:
+                target = arg.pop(0)  #e.g. add additem player
+            else:
+                target = self._ask_for_target()
+        else:
+            target = None
+
+        #next is all remaining parameters as per the if/else hell below
+        other_params = skyrim_commands[key][1::]
+        param_answers = []
+        if arg:
+            param_answers = arg  #e.g. add additem player f 20 => [f, 20]
+
+        #runs if unfilled parameter slots, offset by the command base
+        if len(other_params) > len(param_answers):
+            param_answers.extend(self._ask_for_param(other_params[len(param_answers)::]))
+
+        name = input('Enter Desired Name or Press Enter: ')
+        if not name:
+            name=' '
+
+        cmd = {}
+        cmd['NAME'] = name
+        cmd['CODE'] = self._form_cmd(cmdbase, target, param_answers)
+        self.cmd_list[len(self.cmd_list)] = cmd.copy() #gonna be set to the next value
+        print(cmd['NAME'], cmd['CODE'])
+
+    '''
     def add_cmd(self, key=None, exact=None, name=' ', target=None, params=[]):
         if exact != None:
             cmd = {}
@@ -70,7 +171,7 @@ class CommandMaker:
         cmd['NAME'] = name
         cmd['CODE'] = self._form_cmd(cmdbase, target, params)
         self.cmd_list[len(self.cmd_list)] = cmd.copy() #gonna be set to the next value
-
+    '''
     '''Saves command as a list to folder designated as skyrim directory'''
     def save_cmds(self, filename, skypath=None):
         if skypath==None: skypath=self.skypath
