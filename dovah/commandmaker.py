@@ -1,4 +1,4 @@
-from dovah.skyrimdata.skyrimcommands import skyrim_commands
+from skyrimdata.skyrimcommands import skyrim_commands
 from lookup import user_lookup, valuename_lookup
 from rich import print
 from rich.table import Table
