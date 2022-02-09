@@ -1,279 +1,204 @@
 from dovah.skyrimdata.skyrimcommands import skyrim_commands
-from dovah.skyrimdata.skyrimavs import skyrim_avs
-#from dovah.skyrimdata.skyrimenchantments import skyrim_enchantments
-from dovah.skyrimdata.skyrimitems import skyrim_items
-from dovah.skyrimdata.skyrimnpcs import skyrim_npcs
-from dovah.skyrimdata.skyrimperks import skyrim_perks
-from dovah.skyrimdata.skyrimquests import skyrim_quests
-from dovah.skyrimdata.skyrimspells import skyrim_spells
-from dovah.skyrimdata.skyrimweather import skyrim_weather
-from dovah.skyrimdata.skyrimskills import skyrim_skills
-#from dovah.skyrimdata.alchemy import ingredients
-import os
+from lookup import user_lookup, valuename_lookup
 from rich import print
-
+from rich.table import Table
+import os, sys
 MS_SKYPATH = 'C:\Program Files (x86)\Steam\steamapps\common\Skyrim Special Edition'
+skypath = MS_SKYPATH
+cmd_list = []
 
 def run(args=None):
-    command_maker = CommandMaker()
     if not args:
-        command_maker.run_text_ui()
+        run_text_ui()
     else:
         if args[0] =='load':
             if len(args) == 1:
                 filename = input('Enter file to load: ')
             else: #the second one is the filename
                 filename = args[1]
-            command_maker.load_cmds(filename)
-            command_maker.run_text_ui()
+            load_cmds(filename)
+            run_text_ui()
         else:
             #new keyword is used alongside arguments; py dovah cmd new
             if args[0] == 'new' and len(args) > 1:
-                command_maker.run_text_ui(args[1::])
+                run_text_ui(args[1::])
             #py dovah cmd additem player 30
             elif args[0] != 'new':
-                command_maker.run_text_ui(args)
+                run_text_ui(args)
             #py dovah new
             else:
-                command_maker.run_text_ui()
+                run_text_ui()
 
-
-class CommandMaker:
-    def __init__(self):
-        self.cmd_list = {}
-
-    def run_text_ui(self, args=None):
-        while(True):
-            self.show_cmds()
-            if not args:
-                choice = ['foo']
-            else:
-                choice = args
-                print(choice)
-            while choice[0] not in ['add','save','load','locate', 'exit']:
-                choice = self.ask_user()
-            if choice[0] == 'add':
-                if len(choice) > 1:
-                    self.add_cmd(arg=choice[1::]) #further parsing happens by method
-                else:
-                    self.add_cmd()
-            if choice[0] == 'save':
-                if len(choice) > 1:
-                    self.save_cmds(choice[1])#filename
-                else:
-                    self.save_cmds()
-            if choice[0] == 'load':
-                if len(choice) > 1:
-                    self.load_cmds(choice[1])#filename
-                else:
-                    self.load_cmds()
-            if choice[0] == 'locate':
-                self.locate_skyrim()
-            if choice[0] == 'exit':
-                break
-
-            #after first loop, delete arguments and input from user
-            choice.clear()
-            if args:
-                args.clear()
-
-    def ask_user(self):
-        return input('Enter Your Command from save, load, add or locate followed by additional parameters: ').split()
-
-
-    def help(self):
-        print('show_cmds() : prints commands')
-        print('add_command() : dialog to create console command. You can pass these parameters into it:')
-        print('\t exact:text of command, key:id of command, target:usually player')
-        print('locate_skyrim() : searches computer for skyrimse.exe')
-
-    def pop(self, index):
-        if index == 0:
-            raise IndexError
-        self.cmd_list.pop(index)
-
-    '''searches through folders to find skyrim and sets it to self.skypath'''
-    def locate_skyrim(self, start_folder='C:/'):
-        for root, dirs, files in os.walk(start_folder):
-            if 'SkyrimSE.exe' in files:
-                self.skypath = root
-                return
-
-    #console command editorz
-    '''Prints console commands stored in self.cmd_list'''
-    def show_cmds(self):
-        if len(self.cmd_list) < 1:
-            print('No Commands Stored')
+def run_text_ui(args=None):
+    def main_menu():
+        return input('Main Menu: Save, Load, Add, Exit:  ').lower().split()
+    while(True):
+        os.system("cls")
+        __show_cmds()
+        if not args:
+            choice = ['foo']
         else:
-            for i in range(1,len(self.cmd_list)):
-                print(i, self.cmd_list[i]['NAME'], '\n\t', self.cmd_list[i]['CODE'])
+            choice = args
+        while choice[0] not in ['add','save','load', 'exit']:
+            choice = main_menu()
 
-    '''Enter Console Command Wizard'''
+        if choice[0] == 'add':
+            if len(choice) > 1:
+                add_cmd(arg=choice[1::]) #further parsing happens by method
+            else:
+                add_cmd()
 
-    def add_cmd(self, arg=None):
-        #first argument should be either key to command or name of command
-        #if it is, then the command wizard proceeds and stops when input runs out
-        #if it is not, them the command wizard regards input as garbage and
-        #continues as if there were no arguments
+        if choice[0] == 'save':
+            if len(choice) > 1:
+                save_cmds(choice[1])#filename
+            else:
+                filename = input('What to name this file? ')
+                save_cmds(filename)
+
+        if choice[0] == 'load':
+            if len(choice) > 1:
+                load_cmds(choice[1])#filename
+            else:
+                load_cmds()
+
+        if choice[0] == 'locate':
+            locate_skyrim()
+
+        if choice[0] == 'exit':
+            break
+        #after first loop, delete arguments and input from user
+        choice.clear()
+        if args: args.clear()
+
+'''searches through folders to find skyrim and sets it to skypath'''
+def locate_skyrim(start_folder='C:/'):
+    for root, dirs, files in os.walk(start_folder):
+        if 'SkyrimSE.exe' in files:
+            skypath = root
+            #print('located skyrim! heres the proof: ', files)
+            return
+
+'''Add Command to cmd_list'''
+def add_cmd(arg=None):
+    #first argument should be either key to command or name of command
+    #if it is, then the command wizard proceeds and stops when input runs out
+    #if it is not, them the command wizard regards input as garbage and
+    #continues as if there were no arguments
+    if arg:
+        basearg = arg.pop(0)
+        #check if the argument is the key corresponding to a command
+        key = valuename_lookup(basearg, 'command')
+        if key < 0:
+            key = _ask_for_cmd_key()
+        cmdbase = skyrim_commands[key][0]
+    else:
+        key = _ask_for_cmd_key()
+        cmdbase = skyrim_commands[key][0]
+    #next argument is the desired target if applicable
+    target = None
+    if key >= 10:
         if arg:
-            basearg = arg.pop(0)
-            print('add debug: here i am: ', basearg)
-            #check if the argument is the key corresponding to a command
-            try:
-                basearg = int(basearg)
-            except ValueError: #check if its a number
-                pass
-
-            if basearg in skyrim_commands:#e.g. 'add 10'
-                key = basearg
-                cmdbase = skyrim_commands[basearg][0]
-            else:
-                for c in skyrim_commands:#check if argument is the name of a command
-                    if basearg == skyrim_commands[c][0]:
-                        key = c
-                        cmdbase = basearg#e.g. 'add additem', 'add setscale'
-                        break
-                #bad input means loop finishes
-                key = self._ask_for_cmd_key()
-                cmdbase = skyrim_commands[key][0]
+            target = arg.pop(0)  #e.g. add additem player
         else:
-            input()
-            key = self._ask_for_cmd_key()
-            cmdbase = skyrim_commands[key][0]
+            target = _ask_for_target()
 
-        #next argument is the desired target if applicable
-        if key >= 10:
-            if arg:
-                target = arg.pop(0)  #e.g. add additem player
-            else:
-                target = self._ask_for_target()
-        else:
-            target = None
+    #next is all remaining parameters get passed through ask_for_param
+    other_params = skyrim_commands[key][1::]
+    param_answers = []
+    if arg:
+        param_answers = arg  #e.g. add additem player f 20 => [f, 20]
+    paramcount = len(param_answers)
+    if len(other_params) > len(param_answers):
+        param_answers.extend(_ask_for_param(other_params[paramcount::]))
+    cmd_list.append(__form_cmd(cmdbase, target, param_answers))
 
-        #next is all remaining parameters as per the if/else hell below
-        other_params = skyrim_commands[key][1::]
-        param_answers = []
-        if arg:
-            param_answers = arg  #e.g. add additem player f 20 => [f, 20]
 
-        #runs if unfilled parameter slots, offset by the command base
-        if len(other_params) > len(param_answers):
-            param_answers.extend(self._ask_for_param(other_params[len(param_answers)::]))
+'''Saves command as a list to folder designated as skyrim directory'''
+def save_cmds(filename):
+    #locate_skyrim()
+    #writing file for this batch  to put in batches folder
+    with open('/batches/'+filename+'.txt', "w") as f:
+        for cmd in cmd_list:
+            f.write(cmd+'\n')
+        f.close()
+    #writing file to put in skyrim directory
+    with open(skypath+'/'+filename+'.txt', "w") as f:
+        for cmd in cmd_list:
+            f.write(cmd+'\n')
+        f.close()
 
-        name = input('Enter a nickname for this command: ')
-        if not name:
-            name=' '
+'''Loads commands from local folder in /batches'''
+def load_cmds(filename):
+    with open('/batches/'+filename+'/code.txt') as c, open('/batches/'+filename+'/code.txt') as n:
+        codes = c.readlines()
+        names = n.readlines()
+        for i in range(len(codes)):#they will have same length
+            cmd = {}
+            cmd['CODE'] = codes[i]
+            cmd['NAME'] = names[i]
+            cmd_list[len(cmd_list)] = cmd.copy()
 
-        cmd = {}
-        cmd['NAME'] = name
-        cmd['CODE'] = self._form_cmd(cmdbase, target, param_answers)
-        self.cmd_list[len(self.cmd_list)] = cmd.copy()
-        #gonna be set to the next value
-        print(cmd['NAME'], cmd['CODE'])
-
-    '''Saves command as a list to folder designated as skyrim directory'''
-    def save_cmds(self, filename, skypath=None):
-        if skypath==None: skypath=self.skypath
-        #if theres not a folder for this batch already, make one:
-        os.makedirs(os.path.dirname('/batches/'+filename), exist_ok=True)
-
-        #writing file for this batch  to put in batches folder
-        with open('/batches/'+filename+'/code.txt', "w") as f:
-            for cmd in self.cmd_list:
-                f.write(cmd['CODE']+'\n')
-            f.close()
-
-        #writing file to put names in alongside previous file
-        with open('/batches/'+filename+'/names.txt', "w") as f:
-            for cmd in self.cmd_list:
-                f.write(cmd['CODE']+'\n')
-            f.close()
-
-        #writing file to put in skyrim directory
-        with open(skypath+'/'+filename+'.txt') as f:
-            for cmd in self.cmd_list:
-                f.write(cmd['CODE']+'\n')
-            f.close()
-
-    '''Loads commands from local folder in /batches'''
-    def load_cmds(self, filename):
-        with open('/batches/'+filename+'/code.txt') as c, open('/batches/'+filename+'/code.txt') as n:
-            codes = c.readlines()
-            names = n.readlines()
-            for i in range(len(codes)):#they will have same length
-                cmd = {}
-                cmd['CODE'] = codes[i]
-                cmd['NAME'] = names[i]
-                self.cmd_list[len(self.cmd_list)] = cmd.copy()
-
-    #Helper methods for the console command writer
-    def _ask_for_cmd_key(self):
-        s = ''
+#Helper methods for the console command writer
+def _ask_for_cmd_key():
+    s = input('input name or id# of desired command: ')
+    s_key = valuename_lookup(s, 'command')
+    if s_key > 0:
+        return s_key
+    else:
         for i in skyrim_commands:
-            print(i, skyrim_commands[i])
-        while(s not in skyrim_commands):
+            print(str(i)+str(skyrim_commands[i]))
+        while(s_key < 0):
             s = input('select key: ')
-            try:
-                s = int(s)
-            except ValueError: #wait for user to type a number
-                continue
-        return s
+            s_key = valuename_lookup(s, 'command')
+        return s_key
 
-    def _ask_for_target(self):
-        if input('is the player the target? ').lower() == 'y':
-            return 'player'
+def _ask_for_target():
+    if input('is the player the target? ').lower() == 'y':
+        return 'player'
+    else:
+        return user_lookup('npc')
+
+def _ask_for_param(paramIDs):
+    params = []
+    for p in paramIDs:
+        if p == 'item_id':
+            params.append(user_lookup('item')[1])
+        elif p ==  'perk_id':
+            params.append(user_lookup('perk')[1])
+        elif p ==  'spell_id':
+            params.append(user_lookup('spell')[1])
+        elif p ==  'faction_id':
+            params.append(user_lookup('faction')[1])
+        elif p ==  'target_id':
+            params.append(user_lookup('target')[1])
+        elif p ==  'skill':
+            params.append(user_lookup('skill')[0])
+        elif p ==  'quest_id':
+            params.append(user_lookup('quest')[1])
+        elif p ==  'atribute':
+            params.append(user_lookup('av')[0])
+        elif p ==  '0':
+            params.append('0')
+        elif p ==  '1':
+            params.append('1')
         else:
-            return self._browse_ids(catalog=skyrim_npcs, title='npc')
+            word = input(p+'? ')
+            params.append(word)
+    return params
 
-    def _ask_for_param(self, paramIDs):
-        params = []
-        for p in paramIDs:
-            print(p)
-            if p == 'item_id':
-                params.append(self._browse_ids(skyrim_items, 'item')[1])
-            elif p ==  'perk_id':
-                params.append(self._browse_ids(skyrim_perks, 'perk')[1])
-            elif p ==  'spell_id':
-                params.append(self._browse_ids(skyrim_spells, 'spell')[1])
-            elif p ==  'faction_id':
-                params.append(self._browse_ids(skyrim_factions, 'faction')[1])
-            elif p ==  'target_id':
-                params.append(self._browse_ids(skyrim_npcs, 'target')[1])
-            elif p ==  'skill':
-                params.append(self._browse_ids(skyrim_skills, 'skill')[0])
-            elif p ==  'quest_id':
-                params.append(self._browse_ids(skyrim_quests, 'quest')[1])
-            elif p ==  'atribute':
-                params.append(self._browse_ids(skyrim_avs, 'av')[0])
-            elif p ==  '0':
-                params.append('0')
-            elif p ==  '1':
-                params.append('1')
-            else:
-                word = input(p+'? ')
-                params.append(word)
-        return params
+def __show_cmds():
+    if len(cmd_list) < 1:
+        print('No Commands Stored')
+    else:
+        print('Existing Commands: ')
+        for cmd in cmd_list:
+            print(cmd)
 
-    def _form_cmd(self, cmdbase, target=None, params=None):
-        text = ''
-        if target != None:
-            text += target+'.'
-        text += cmdbase+' '#space doesnt harm if theres no parameters after
-        if params != None:
-            text += ' '.join(params)
-        return text
-
-    def _browse_ids(self, catalog, title='item'): #catalog is string
-        start_char = input("Enter the first letters of the desired "+title+": ")
-        for i in catalog:
-            if catalog[i][0] is None:
-                print(i, catalog[i])
-            elif catalog[i][0].lower().startswith(start_char):
-                print(i, catalog[i])
-        word = input('which item is being added? ')
-        try:
-            word = int(word)
-        except:
-            word = 0
-        item = skyrim_items[word]
-        return item
+def __form_cmd(cmdbase, target=None, params=None):
+    text = ''
+    if target != None:
+        text += target+'.'
+    text += cmdbase+' '#space doesnt harm if theres no parameters after
+    if params != None:
+        text += ' '.join(params)
+    return text
