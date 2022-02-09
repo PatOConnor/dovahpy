@@ -2,7 +2,7 @@ from skyrimdata.skyrimcommands import skyrim_commands
 from lookup import user_lookup, valuename_lookup
 from rich import print
 from rich.table import Table
-import os, sys
+from os import system, walk
 MS_SKYPATH = 'C:\Program Files (x86)\Steam\steamapps\common\Skyrim Special Edition'
 skypath = MS_SKYPATH
 cmd_list = []

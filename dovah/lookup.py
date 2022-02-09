@@ -1,13 +1,13 @@
-from dovah.skyrimdata.skyrimcommands import skyrim_commands
-from dovah.skyrimdata.skyrimavs import skyrim_avs
-#from dovah.skyrimdata.skyrimenchantments import skyrim_enchantments
-from dovah.skyrimdata.skyrimitems import skyrim_items
-from dovah.skyrimdata.skyrimnpcs import skyrim_npcs
-from dovah.skyrimdata.skyrimperks import skyrim_perks
-from dovah.skyrimdata.skyrimquests import skyrim_quests
-from dovah.skyrimdata.skyrimspells import skyrim_spells
-from dovah.skyrimdata.skyrimweather import skyrim_weather
-from dovah.skyrimdata.skyrimskills import skyrim_skills
+from skyrimdata.skyrimcommands import skyrim_commands
+from skyrimdata.skyrimavs import skyrim_avs
+#from skyrimdata.skyrimenchantments import skyrim_enchantments
+from skyrimdata.skyrimitems import skyrim_items
+from skyrimdata.skyrimnpcs import skyrim_npcs
+from skyrimdata.skyrimperks import skyrim_perks
+from skyrimdata.skyrimquests import skyrim_quests
+from skyrimdata.skyrimspells import skyrim_spells
+from skyrimdata.skyrimweather import skyrim_weather
+from skyrimdata.skyrimskills import skyrim_skills
 #from dovah.skyrimdata.alchemy import ingredients
 
 
