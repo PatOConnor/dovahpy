@@ -3,12 +3,15 @@ import cv2
 import pyautogui
 import keyboard
 import pygetwindow as gw
+from pytesseract import pytesseract as tess
 from time import sleep
+tess.tesseract_cmd = r'C:\\Program Files\\Tesseract-OCR\\tesseract.exe'
 
-def take_screenshot(filename):
+def take_screenshot():
     image = pyautogui.screenshot()
     image = cv2.cvtColor(np.array(image), cv2.COLOR_RGB2BGR)
-    cv2.imwrite('alchemy_images/'+filename+'.png', image)
+    #cv2.imwrite('alchemy_images/'+filename+'.png', image)
+    return image
 
 def magnify_skyrim():
     win = gw.getWindowsWithTitle('Skyrim Special Edition')[0]
@@ -19,18 +22,23 @@ def scroll_down(amt):
         keyboard.send('s')
         sleep(0.25)
 
+def image_to_list(img):
+    text = tess.image_to_string(img)
+    print(text)
+    return [1,2]
+
 def gather_inventory():
     i = 0
     magnify_skyrim()
     sleep(3)
-    take_screenshot('alch_'+str(i))
+    img = take_screenshot()
+    inv_list = image_to_list(img)#first image of inventory
     scroll_down(8)#crop the top of the inventory
-    inv_list = image_to_list()#first image of inventory
     while(True):
         i += 1
-        take_screenshot('alch_'+str(i)  )
+        img = take_screenshot()
         scroll_down(16)
-        inv_page = image_to_list()
+        inv_page = image_to_list(img)
         #if it hasn't gotten to the end of the list
         #if inv_page[-1] != inv_list[-1]:      <=actual condition
         if i < 5:
@@ -39,8 +47,6 @@ def gather_inventory():
             break
     inv_list = list(set(inv_list))#remove duplicates
 
-def image_to_list():
-    return [1,2]
 
 def crunch_inventory(inv_list):
     pass
