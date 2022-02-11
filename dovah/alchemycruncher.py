@@ -1,19 +1,16 @@
 from skyrimdata.skyrimalchemy import ingredients, effects
-import np as numpy
-
+import numpy as np
 
 def crunch(inventory):
     inventory = singlify(inventory)
     #convert the strings into their dictionary entries from skyrimalchemy.ingredients
     inventory = convert_to_dict(inventory)
-    #separate inventory into ingredients with value multipliers and ingredients without
-    #the value multiplier overrides any boost from the magnitude multiplier, so
-    #the magnitude multipliers shouldn't be wasted by pairing them with valmults
-
-
-    inventory = convert_to_array(inventory)
-    potions_array = make_potions(inventory)
-    potions = convert_to_string(potions_array)
+    potions, inventory = make_2d_potions(inventory)
+    potions, inventory = stack_potions(potions, inventory)
+    round2, inventory = make_2d_potions(inventory)
+    round2, inventory = stack_potions(potions, inventory)
+    potions.extend(round2)
+    potions = convert_to_strings(potions)
     return potions
 
 #takes the quantity parameter and returns a 1d list of all the ingredient names
@@ -39,6 +36,60 @@ def convert_to_dict(inventory):
                 continue
     return inv_dicts
 
+def make_2d_potions(inventory):
+    potion_list = []
+    matches = []
+    sorted_effects = effects_sorted_by_value(effects)
+    #effect = 1:{'NAME':Paralysis, 'INGR':['', '', ...],  'VALUE':285}
+    for effect in sorted_effects:
+        possible_ingredients = effect['INGR']
+        #deleting the DLC text
+        for p in possible_ingredients:
+            if p[-2:] in ['DG','HF','DB','CC']:
+                p = p[:-2:]
+        #select all the ingredients in pocket that will do the current effect:
+        for i in range(len(inventory)):
+            ingr_name = inventory[i]['NAME']
+            if ingr_name in possible_ingredients:
+                matches.append(inventory.pop(i))
+        matches = sorted_by_value(matches)
+        potion_group = []
+        #pairing up the ingredients first-last, 2nd-2ndLast, etc.
+        for i in range(len(matches)//2):
+            first_ingr = matches.pop(0)
+            second_ingr = matches.pop(-1)
+            potion_group.append([first_ingr, second_ingr])
+        if matches:#if there is one element left, it goes back into inventory
+            inventory.append(matches.pop())
+        #now there is a 2xN list of ingredients of the current examined effect
+        potion_list.extend(potion_group)
+    return potion_list, inventory
 
-def convert_to_array(inventory):
-    
+def stack_potions(potion_list, inventory):
+    #go through each potion and find a way to supe it up
+
+    #look for ingredients with the valued ingredient first in the inventory,
+    #if none are found, take one from the shittiest potion available of that effect
+    #the other ingredient gets added into the inventory
+
+    #return the stacked list and the loose inventory
+    pass
+
+
+def effects_sorted_by_value(list_of_dicts):
+    return effects
+    #returns copy of the effects dictionary but sorted by septim payout
+
+def sorted_by_value(list_of_dicts):
+    #takes in a list of dictionary entries which each have MAGNITUDEMULT, DURATIONMULT, and VALUEMULT
+    #returns a list, sorted by the largest of those three values
+    return list_of_dicts
+
+
+def convert_to_strings(potions):
+    #the fucking victory lap
+    pass
+
+if __name__=='__main__':
+    for test in test_lists:
+        crunch(test)

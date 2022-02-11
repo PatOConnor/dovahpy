@@ -9,6 +9,7 @@ from rich import print
 import re
 from skyrimdata.skyrimalchemy import ingredients
 import alchemycruncher
+from webbrowser import open as website_open
 
 tess.tesseract_cmd = r'C:\\Program Files\\Tesseract-OCR\\tesseract.exe'
 import ctypes
@@ -107,7 +108,6 @@ def filter_inventory(inv_list):
 def ask_user(confirmed_list, sus_list):
     reformed_list = []
     for item in sus_list:
-
         for gooditem in confirmed_list:
             dupli = False
             commonletters = set(item[0].rstrip(' ')+gooditem[0].rstrip(' '))
@@ -117,14 +117,15 @@ def ask_user(confirmed_list, sus_list):
                 dupli = True
                 break#continue outer loop on next item
         #ask user if it couldn't tell
-        if not dupli:
+        if not dupli and len(item[0]) > 4:
             print(item[0])
-            dup = input('is this item a duplicate of one above? y/n ')
-            if dup.lower() == 'y':
-                continue
-            else: #'tesseract has no idea what its looking at' case
-                correct = input('enter the correct name for this item')
-                reformed_list.append(correct, item[1])
+            #'tesseract has no idea what its looking at' case
+            garb = input('is this garbage input? y/n ')
+            if garb.lower() == 'n':
+                dup = input('is this item a duplicate of one above? y/n ')
+                if dup.lower() == 'n':
+                    correct = input('enter the correct name for this item ')
+                    reformed_list.append([correct, item[1]])
     return reformed_list
 
 def gather_inventory(final_item):
@@ -132,7 +133,7 @@ def gather_inventory(final_item):
     magnify('skyrimSE')
     sleep(1)
     final_list = []
-    for i in range(1):
+    for i in range(2):
         list1 = gather('s')
         scroll(3, 'w')
         list2 = gather('w')
@@ -150,19 +151,37 @@ def gather_inventory(final_item):
     confirmed_ingr, sus_ingr = filter_inventory(final_list)
     print(confirmed_ingr)
     #print(len(final_list), len(confirmed_ingr), len(sus_ingr))
+    website_open('https://www.youtube.com/watch?v=GVAF07-2Xic')
+    sleep(2)
+    keyboard.send(' ')
     reformed_ingr = ask_user(confirmed_ingr, (sus_ingr))
     if reformed_ingr:
         confirmed_ingr.extend(reformed_ingr)
     return confirmed_ingr
+
+def write_alchemy_to_file(data):
+    print('write method started')
+    file = open("alchemy_lists.py", 'a', encoding="utf-8")
+    print('write open...')
+    file.write('[\n')
+    for item in data:  #this writes it in python dictionary syntax
+        file.write('['+item[0]+', '+str(item[1])+'],\n')
+    file.write(']\n\n')
+    print('write finished')
+    file.close()
+
 
 def run():
     print('Alchemist Engine. Boot Skyrim to top of ingredients section of inventory')
     final_item = input('what i6s the last item in your inventory?: ')
     inventory = gather_inventory(final_item)
     print(inventory)
-    potions_list = alchemycruncher.crunch(inventory)
-    for p in potions_list:
-        print(p)
+    write_alchemy_to_file(inventory)
+    #potions_list = alchemycruncher.crunch(inventory)
+    #for p in potions_list:
+    #    print(p)
+
+
 
 if __name__=="__main__":
     run()

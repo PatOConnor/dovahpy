@@ -191,5 +191,4 @@ ingredients = {
 
 
 effects = {
-
 }
