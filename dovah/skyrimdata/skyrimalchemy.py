@@ -1,4 +1,4 @@
-skyrim_alchemy = {
+ingredients = {
 	0:{'NAME': 'Abecean Longfin', 'CODE': '00106e1b', 'DESC': 'Collected by catching Abacean Longfin fish.', 'EFFECTS': [{'NAME': 'Weakness to Frost', 'MAGNITUDEMULT': 1, 'DURATIONMULT': 1, 'VALUEMULT': 1}, {'NAME': 'Fortify Sneak', 'MAGNITUDEMULT': 1, 'DURATIONMULT': 1, 'VALUEMULT': 1}, {'NAME': 'Weakness to Poison', 'MAGNITUDEMULT': 1, 'DURATIONMULT': 1, 'VALUEMULT': 1}, {'NAME': 'Fortify Restoration', 'MAGNITUDEMULT': 1, 'DURATIONMULT': 1, 'VALUEMULT': 1}], 'VALUE': 15, 'WEIGHT': 0.5, 'RARITY': 'Common', 'CROPYIELD': ''},
 	1:{'NAME': 'Ancestor Moth WingDG', 'CODE': 'xx0059ba', 'DESC': 'Collected by catching Ancestor Moths.', 'EFFECTS': [{'NAME': 'Damage Stamina', 'MAGNITUDEMULT': 1, 'DURATIONMULT': 1, 'VALUEMULT': 1}, {'NAME': 'Fortify Conjuration', 'MAGNITUDEMULT': 1, 'DURATIONMULT': 1, 'VALUEMULT': 1}, {'NAME': 'Damage Magicka Regen', 'MAGNITUDEMULT': 1, 'DURATIONMULT': 1, 'VALUEMULT': 1}, {'NAME': 'Fortify Enchanting', 'MAGNITUDEMULT': 1, 'DURATIONMULT': 1, 'VALUEMULT': 1}], 'VALUE': 2, 'WEIGHT': 0.1, 'RARITY': 'None', 'CROPYIELD': ''},
 	2:{'NAME': 'Ash Creep ClusterDB', 'CODE': 'xx01cd74', 'DESC': 'Harvested from creep cluster plants unique to Solstheim.', 'EFFECTS': [{'NAME': 'Damage Stamina', 'MAGNITUDEMULT': 1, 'DURATIONMULT': 1, 'VALUEMULT': 1}, {'NAME': 'Invisibility', 'MAGNITUDEMULT': 1, 'DURATIONMULT': 1, 'VALUEMULT': 1}, {'NAME': 'Resist Fire', 'MAGNITUDEMULT': 1, 'DURATIONMULT': 1, 'VALUEMULT': 1}, {'NAME': 'Fortify Destruction', 'MAGNITUDEMULT': 1, 'DURATIONMULT': 1, 'VALUEMULT': 1}], 'VALUE': 20, 'WEIGHT': 0.25, 'RARITY': '', 'CROPYIELD': ''},
@@ -188,3 +188,8 @@ skyrim_alchemy = {
 	186:{'NAME': 'Jarrin Root', 'CODE': '0001bcbc', 'DESC': 'You may only receive this ingredient once during the Dark Brotherhood quest line.', 'EFFECTS': [{'NAME': 'Damage Health', 'MAGNITUDEMULT': '100', 'DURATIONMULT': 1, 'VALUEMULT': 1}, {'NAME': 'Damage Magicka', 'MAGNITUDEMULT': 1, 'DURATIONMULT': 1, 'VALUEMULT': 1}, {'NAME': 'Damage Stamina', 'MAGNITUDEMULT': 1, 'DURATIONMULT': 1, 'VALUEMULT': 1}, {'NAME': 'Damage Magicka Regen', 'MAGNITUDEMULT': 1, 'DURATIONMULT': 1, 'VALUEMULT': 1}], 'VALUE': 10, 'WEIGHT': 0.5, 'RARITY': 'None'},
 	187:{'NAME': "Simon Rodayne's Heart", 'CODE': 'FExxx85D', 'DESC': 'The heart of a fallen Spell Knight.', 'EFFECTS': [{'NAME': 'Damage Health', 'MAGNITUDEMULT': 1, 'DURATIONMULT': 1, 'VALUEMULT': 1}, {'NAME': 'Damage Magicka', 'MAGNITUDEMULT': 1, 'DURATIONMULT': 1, 'VALUEMULT': 1}, {'NAME': 'Damage Magicka Regen', 'MAGNITUDEMULT': 1, 'DURATIONMULT': 1, 'VALUEMULT': 1}, {'NAME': 'Frenzy', 'MAGNITUDEMULT': 1, 'DURATIONMULT': 1, 'VALUEMULT': 1}], 'VALUE': 0, 'WEIGHT': 1.0, 'RARITY': ''},
 	}
+
+
+effects = {
+
+}

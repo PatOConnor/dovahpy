@@ -7,7 +7,8 @@ from time import sleep
 from pytesseract import pytesseract as tess
 from rich import print
 import re
-from skyrimdata.skyrimalchemy import skyrim_alchemy
+from skyrimdata.skyrimalchemy import ingredients
+import alchemycruncher
 
 tess.tesseract_cmd = r'C:\\Program Files\\Tesseract-OCR\\tesseract.exe'
 import ctypes
@@ -64,7 +65,7 @@ def read_alchemy_list(inv_list):
 def image_to_list(img):
     inv_list = []
     text = tess.image_to_string(img).split('\n')
-    print(len(text),text[0],text[len(text)-1])
+    #print(len(text),text[0],text[len(text)-1])
     return text
 
 def gather(direction):
@@ -95,31 +96,43 @@ def filter_inventory(inv_list):
     true_list = []
     sus_list = []
     for item in inv_list:
-        for ingr in skyrim_alchemy:
-            if item[0].lower().strip() == skyrim_alchemy[ingr]['NAME'].lower():
+        for ingr in ingredients:
+            if item[0].lower().strip() == ingredients[ingr]['NAME'].lower().strip():
                 true_list.append(item)
     for item in inv_list:
         if item not in true_list:
             sus_list.append(item)
     return true_list, sus_list
 
-def ask_user(sus_list):
+def ask_user(confirmed_list, sus_list):
     reformed_list = []
     for item in sus_list:
-        print(item[0])
-        dup = input('is this item a duplicate of one above? y/n ')
-        if dup.lower() == 'y':
-            continue
-        else:
-            correct = input('enter the correct name for this item')
-            reformed_list.append(correct, item[1])
 
-def gather_inventory():
+        for gooditem in confirmed_list:
+            dupli = False
+            commonletters = set(item[0].rstrip(' ')+gooditem[0].rstrip(' '))
+            #print(commonletters, gooditem[0], item[0])
+            #if it is one character off:
+            if len(commonletters)-len(item[0]) < 2:
+                dupli = True
+                break#continue outer loop on next item
+        #ask user if it couldn't tell
+        if not dupli:
+            print(item[0])
+            dup = input('is this item a duplicate of one above? y/n ')
+            if dup.lower() == 'y':
+                continue
+            else: #'tesseract has no idea what its looking at' case
+                correct = input('enter the correct name for this item')
+                reformed_list.append(correct, item[1])
+    return reformed_list
+
+def gather_inventory(final_item):
     i = 0
     magnify('skyrimSE')
     sleep(1)
     final_list = []
-    for i in range(2):
+    for i in range(1):
         list1 = gather('s')
         scroll(3, 'w')
         list2 = gather('w')
@@ -130,28 +143,26 @@ def gather_inventory():
         final_list.extend(inv_list)
     final_list = list(set(final_list))
     final_list.sort()
-    #final_item = input('what is the last item in your inventory? ')
-    final_list.append('white cap')
+
+    final_list.append(final_item)
     final_list = read_alchemy_list(final_list)
-    print(final_list)
+    #print(final_list)
     confirmed_ingr, sus_ingr = filter_inventory(final_list)
-    print(confirmed_ingr, sus_ingr)
-    print(len(final_list), len(confirmed_ingr), len(sus_ingr))
-    reformed_ingr = ask_user(sus_ingr)
+    print(confirmed_ingr)
+    #print(len(final_list), len(confirmed_ingr), len(sus_ingr))
+    reformed_ingr = ask_user(confirmed_ingr, (sus_ingr))
     if reformed_ingr:
         confirmed_ingr.extend(reformed_ingr)
     return confirmed_ingr
 
-def crunch_inventory(inv_list):
-    pass
-
 def run():
-    print('Alchemist Engine. Boot Skyrim to inventory menu and press any key.')
-    #input()
-    ingredients = gather_inventory()
-    #potions_list = crunch_inventory(ingredients)
-    #for p in potions_list:
-    #    print(p, potions_list[p])
+    print('Alchemist Engine. Boot Skyrim to top of ingredients section of inventory')
+    final_item = input('what i6s the last item in your inventory?: ')
+    inventory = gather_inventory(final_item)
+    print(inventory)
+    potions_list = alchemycruncher.crunch(inventory)
+    for p in potions_list:
+        print(p)
 
 if __name__=="__main__":
     run()
