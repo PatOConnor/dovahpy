@@ -41,4 +41,4 @@ elif module_argument in ['l', 'look', 'lookup']:
 elif module_argument in ['v', 'va', 'voice', 'voiceattack']:
     voiceattack.run()
 elif module_argument in ['s', 'd', 'data', 'datascraper', 'scraper']:
-    scraper_menu.run()
+    scraper_menu.run(argv[2::])

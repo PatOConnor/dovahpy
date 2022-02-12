@@ -41,17 +41,17 @@ def get_effect_data(effect_cell):
                         current_multiplier = excess_strip(current_multiplier)
                         linkelem = elem.find('a')
                         if linkelem['title'] == 'Magnitude':
-                            magnitudemult = current_multiplier
+                            magnitudemult = float(current_multiplier)
                         elif linkelem['title'] == 'Duration':
-                            durationmult = current_multiplier
+                            durationmult = float(current_multiplier)
                         elif linkelem['title'] == 'Value':
-                            valuemult = current_multiplier
+                            valuemult = float(current_multiplier)
                 elif elem['title'] == 'Magnitude':
-                    magnitudemult = current_multiplier
+                    magnitudemult = float(current_multiplier)
                 elif elem['title'] == 'Duration':
-                    durationmult = current_multiplier
+                    durationmult = float(current_multiplier)
                 elif elem['title'] == 'Value':
-                    valuemult = current_multiplier
+                    valuemult = float(current_multiplier)
             effect_counter += 1
         new_effect = {}
         new_effect['NAME'] = name

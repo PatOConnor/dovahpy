@@ -165,7 +165,7 @@ def write_alchemy_to_file(data):
     print('write open...')
     file.write('[\n')
     for item in data:  #this writes it in python dictionary syntax
-        file.write('['+item[0]+', '+str(item[1])+'],\n')
+        file.write('[\''+item[0]+'\', '+str(item[1])+'],\n')
     file.write(']\n\n')
     print('write finished')
     file.close()
@@ -173,10 +173,12 @@ def write_alchemy_to_file(data):
 
 def run():
     print('Alchemist Engine. Boot Skyrim to top of ingredients section of inventory')
-    final_item = input('what i6s the last item in your inventory?: ')
-    inventory = gather_inventory(final_item)
-    print(inventory)
-    write_alchemy_to_file(inventory)
+    #final_item = input('what i6s the last item in your inventory?: ')
+    #final_item = 'White Cap'
+    #inventory = gather_inventory(final_item)
+    #print(inventory)
+    #write_alchemy_to_file(inventory)
+    alchemycruncher.run()
     #potions_list = alchemycruncher.crunch(inventory)
     #for p in potions_list:
     #    print(p)
