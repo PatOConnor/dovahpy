@@ -10,12 +10,10 @@ import re
 from skyrimdata.skyrimalchemy import ingredients
 import alchemycruncher
 from webbrowser import open as website_open
-
-tess.tesseract_cmd = r'C:\\Program Files\\Tesseract-OCR\\tesseract.exe'
 import ctypes
 user32 = ctypes.windll.user32
 screensize = user32.GetSystemMetrics(0), user32.GetSystemMetrics(1)
-
+tess.tesseract_cmd = r'C:\\Program Files\\Tesseract-OCR\\tesseract.exe'
 
 
 def take_screenshot():
@@ -56,7 +54,7 @@ def read_alchemy_list(inv_list):
             if paren_index > 1:
                 q = item[paren_index+1:item.find(')'):]
                 q = int(q)
-                n = item[:paren_index:]
+                n = item[:paren_index-1:]
             else:
                 n = item
                 q = 1
@@ -151,15 +149,12 @@ def gather_inventory(final_item):
     confirmed_ingr, sus_ingr = filter_inventory(final_list)
     print(confirmed_ingr)
     #print(len(final_list), len(confirmed_ingr), len(sus_ingr))
-    website_open('https://www.youtube.com/watch?v=GVAF07-2Xic')
-    sleep(2)
-    keyboard.send(' ')
     reformed_ingr = ask_user(confirmed_ingr, (sus_ingr))
     if reformed_ingr:
         confirmed_ingr.extend(reformed_ingr)
     return confirmed_ingr
 
-def write_alchemy_to_file(data):
+def write_test_to_file(data):
     print('write method started')
     file = open("alchemy_lists.py", 'a', encoding="utf-8")
     print('write open...')
@@ -177,7 +172,8 @@ def run():
     #final_item = 'White Cap'
     #inventory = gather_inventory(final_item)
     #print(inventory)
-    #write_alchemy_to_file(inventory)
+    #write_test_to_file(inventory)
+    #alchemycruncher.run(inventory)
     alchemycruncher.run()
     #potions_list = alchemycruncher.crunch(inventory)
     #for p in potions_list:

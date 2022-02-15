@@ -5,7 +5,7 @@ from rich import print
 
 def crunch(inventory):
     inventory = singlify(inventory)
-    #print(inventory)
+    print(len(inventory))
     #convert the strings into their dictionary entries from skyrimalchemy.ingredients
     inventory = convert_to_dict(inventory)
     potions, inventory = make_2d_potions(inventory)
@@ -14,7 +14,7 @@ def crunch(inventory):
     #round2, inventory = stack_potions(potions, inventory)
     #potions.extend(round2)
     potions = convert_to_strings(potions)
-    print(potions)
+    #print(potions, inventory)
     return potions
 
 #takes the quantity parameter and returns a 1d list of all the ingredient names
@@ -22,7 +22,7 @@ def singlify(inventory):
     stretched_list = []
     for item in inventory:
         while item[1] > 0:
-            stretched_list.append(item[0])
+            stretched_list.append(item[0].strip())
             item[1] -= 1
     return stretched_list
 
@@ -45,7 +45,7 @@ def make_2d_potions(inventory):
     potion_list = []
     matches = []
     sorted_effects = effects_sorted_by_value()
-    #effect = 1:{'NAME':Paralysis, 'INGR':['', '', ...],  'VALUE':285}
+    #effect = 1:{'NAME':Paralysis, 'INGR':['', '', ...], ... , 'VALUE':285}
     for effect in sorted_effects[3::]:
         possible_ingredients = effects[effect]['INGR']
         #deleting the DLC text
@@ -105,11 +105,12 @@ def sorted_by_value(list_of_ingr, common_effect):
 
 def convert_to_strings(potions):
     #the fucking victory lap
+    print(len(potions))
     for p in potions:
         print(p[0]['NAME'], p[1]['NAME'])
 
-def run(): #for testing from dovah main menu
-    crunch(test)
+def run(inventory=test): #for testing from dovah main menu
+    crunch(inventory)
 
 if __name__=='__main__':
     run()
