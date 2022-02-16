@@ -62,6 +62,12 @@ def make_2d_potions(inventory):
         potion_group = []
         #pairing up the ingredients first-last, 2nd-2ndLast, etc.
         for i in range(len(matches)//2):
+
+            # TODO: need to write a better algorithm for pairing up the potions
+            #       right now it combines 2 of the same ingredient
+
+
+
             first_ingr = matches.pop(0)
             second_ingr = matches.pop(-1)
             potion_group.append([first_ingr, second_ingr])
