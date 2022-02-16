@@ -33,7 +33,7 @@ def run_text_ui(args=None):
     def main_menu():
         return input('Main Menu: Save, Load, Add, Exit:  ').lower().split()
     while(True):
-        os.system("cls")
+        system("cls")
         __show_cmds()
         if not args:
             choice = ['foo']
@@ -72,7 +72,7 @@ def run_text_ui(args=None):
 
 '''searches through folders to find skyrim and sets it to skypath'''
 def locate_skyrim(start_folder='C:/'):
-    for root, dirs, files in os.walk(start_folder):
+    for root, dirs, files in walk(start_folder):
         if 'SkyrimSE.exe' in files:
             skypath = root
             #print('located skyrim! heres the proof: ', files)
@@ -129,14 +129,10 @@ def save_cmds(filename):
 
 '''Loads commands from local folder in /batches'''
 def load_cmds(filename):
-    with open('/batches/'+filename+'/code.txt') as c, open('/batches/'+filename+'/code.txt') as n:
-        codes = c.readlines()
-        names = n.readlines()
-        for i in range(len(codes)):#they will have same length
-            cmd = {}
-            cmd['CODE'] = codes[i]
-            cmd['NAME'] = names[i]
-            cmd_list[len(cmd_list)] = cmd.copy()
+    with open('/batches/'+filename+'.txt') as f:
+        codes = f.readlines()
+        for c in codes:
+            cmd_list.append(c)
 
 #Helper methods for the console command writer
 def _ask_for_cmd_key():
