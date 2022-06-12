@@ -1,0 +1,2 @@
+foo test
+player.additem  000D79BE 1 

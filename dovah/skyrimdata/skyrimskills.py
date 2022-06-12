@@ -1,3 +1,4 @@
+#this was hard-coded in
 skyrim_skills = {
 	1:('Alchemy', '00000456', 'Skill'),
 	2:('Alteration', '00000458', 'Skill'),
