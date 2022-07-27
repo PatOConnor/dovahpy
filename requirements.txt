@@ -1,0 +1,13 @@
+# used for text output
+rich
+
+# used for the web scraper
+bs4
+
+# alchemist imports
+pytesseract
+numpy
+keyboard
+opencv-python
+pygetwindow
+pyautogui

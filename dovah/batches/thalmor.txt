@@ -1,0 +1,20 @@
+banish daedra dagger
+player.additem  000BE18A 1 
+locks 1
+player.addperk  000F392A
+locks 2
+player.addperk  000BE125
+locks 3
+player.addperk  000C3680
+locks 4
+player.addperk  000C3681
+black gems
+player.additem  0002E504 20 
+locks 5
+player.addperk  000C3682
+ spellbook
+psb 
+30 souls
+player.forceAV  DragonSouls 30
+
+player.additem  0000000A 200 

@@ -26,7 +26,7 @@ skyrim_commands = {
 	24:{'NAME': 'additem ', 'PARAMS': ['<item ID> ', '<count> ', '<flag (optional)>'], 'DETAILS': 'Give a character the specified amount of an item'},
 	25:{'NAME': 'addperk ', 'PARAMS': ['<perk ID>'], 'DETAILS': 'Give a character the selected perk'},
 	26:{'NAME': 'addspell ', 'PARAMS': ['<spell ID>'], 'DETAILS': "Add a specific spell to a character's available arsenal."},
-	27:{'NAME': 'addfac/addtofaction ', 'PARAMS': ['<faction ID> ', '<faction rank>'], 'DETAILS': 'Add a character to a faction.'},
+	27:{'NAME': 'addtofaction', 'PARAMS': ['<faction ID> ', '<faction rank>'], 'DETAILS': 'Add a character to a faction.'},
 	28:{'NAME': 'advlevel', 'PARAMS': None, 'DETAILS': "Advance a character's level by one."},
 	29:{'NAME': 'AdvSkill ', 'PARAMS': ['<skill> ', '<nn>'], 'DETAILS': 'Advance the specified skill.'},
 	30:{'NAME': 'completequest ', 'PARAMS': ['<quest ID>'], 'DETAILS': 'Complete the quest instantly.'},

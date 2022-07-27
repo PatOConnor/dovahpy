@@ -1,13 +1,13 @@
 # DovahPy
 
+.exe coming soon
+
 ## <u>About</u>
 <p>This program is a set of tools to make playing Skyrim on PC easier.</p>
 
-## <u>Built With</u>
-
 ## <u>Install Guide</u>
 ### <u>Prerequisites</u>
-* Python
+* Python version 3.10
 * [Tesseract](https://github.com/tesseract-ocr/tesseract) (if using alchemy tool)
 * Git (If installing via command line)
 
@@ -23,7 +23,6 @@
 ## <u>Usage</u>
 1. Enable Python Environment included in repo
 2. Run at package-level to get access to all tools
-3. Alchemist can be ran as its own package
 
 ## <u>Roadmap</u>
 * [x] Skyrim Scraper
